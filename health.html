@@ -3,21 +3,51 @@
 
 <head>
     <title>Health Tasks</title>
+    <link rel="stylesheet" href="style.css"/>
 </head>
 
 <body>
+    <div class="container">
+        <a href="todo.html"  class="no-underline"style="display:block; text-align: left;">&#8592;</a>
+            
+        <h1>Health</h1>
 
-    <h1>Health</h1>
+        <p>3 Tasks</p>
 
-    <p>3 Tasks</p>
+        <ul>
+            <li><input type="checkbox"> Try a new recipe for lunch</li>
+            <li><input type="checkbox"> Had Healthy food</li>
+            <li><input type="checkbox"> Tried a new healthy recipe</li>
+        </ul>
 
-    <ul>
-        <li><input type="checkbox"> Try a new recipe for lunch</li>
-        <li><input type="checkbox"> Had Healthy food</li>
-        <li><input type="checkbox"> Tried a new healthy recipe</li>
-    </ul>
+        <button id="addButton">+</button><br>
+        <a href="todo.html"><button>submit</button></a>
+    
+        <div id="todoForm" style="display: none; margin-top: 10px;">
+        <input type="text" id="newTask" placeholder="Enter a task">
+        <button onclick="addTask()">Add Task</button>
+        </div>
+  </div>
 
-    <button>+</button>
+  <script>
+    // Show the form when the + button is clicked
+    document.getElementById("addButton").onclick = function () {
+      const form = document.getElementById("todoForm");
+      form.style.display = (form.style.display === "none") ? "block" : "none";
+    }
+
+    // Add task to the list
+    function addTask() {
+      const taskText = document.getElementById("newTask").value;
+      if (taskText.trim() === "") return;
+
+      const li = document.createElement("li");
+      li.innerHTML = `<input type="checkbox"> ${taskText}`;
+      document.getElementById("taskList").appendChild(li);
+
+      document.getElementById("newTask").value = ""; // Clear input
+    }
+  </script>
 
 </body>
 
