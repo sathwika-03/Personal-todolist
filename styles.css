@@ -1,0 +1,46 @@
+ body {
+            font-family: Arial, sans-serif;
+            background: #fefefe;
+            text-align: center;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            background-color: #98e7cf;
+            border-radius: 10px;
+          }
+      
+          .header {
+            text-align: center;
+            margin-bottom: 20px;
+          }
+      
+          .task {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgb(139, 135, 135);
+            border-radius: 8px;
+          }
+      
+          .new-task {
+            margin-top: 10px;
+            background: #e0ffe0;
+            padding: 10px;
+            border-radius: 8px;
+          }
+      
+          button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            font-size: 18px;
+            background-color: #9c989e;
+            align-self: right;
+          }
+        .no-underline
+        {
+            text-decoration: none;
+            color: black;
+        }
+
+       
