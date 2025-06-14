@@ -12,7 +12,7 @@ A clean and minimal To-Do List web app that helps you stay organized by grouping
 
 ## 🖼️ Screenshot
 
-![Screenshot of To-Do List App](./assets/screenshot.png)
+![Screenshot of To-Do List App](./assets/Screenshot of To-do List App.png)
 
 ## 🚀 Getting Started
 
