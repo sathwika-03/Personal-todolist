@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Profile</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* your existing styles here */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e7dfdf;
+      margin: 0;
+      padding: 20px;
+    }
+    .profile-container {
+      max-width: 500px;
+      margin: 0 auto;
+      background-color: #d3b0b0;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .profile-pic {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      margin: 0 auto 15px;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      box-sizing: border-box;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .button-group {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+    button.logout {
+      background-color: #dc3545;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    .no-underline {
+      text-decoration: none;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="profile-container">
+    <a href="todo.html"  class="no-underline" style="display:block; text-align: left;">&#8592;</a>
+    <h2>User Profile</h2>
+    <img src="profile.png" alt="Profile Picture" class="profile-pic" />
+
+    <label for="username">Username</label>
+    <input type="text" id="username" readonly />
+
+    <label for="email">Email</label>
+    <input type="email" id="email" />
+
+    <label for="bio">Bio</label>
+    <input type="text" id="bio" placeholder="Write something about yourself..." />
+
+    <div class="button-group">
+      <button onclick="saveProfile()">Save</button>
+      <button class="logout" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <script>
+    // On page load, fetch current user and their profile info
+    window.onload = function() {
+      const currentUser = localStorage.getItem("currentUser");
+      if (!currentUser) {
+        alert("No user logged in. Redirecting to login page.");
+        window.location.href = "login.html";
+        return;
+      }
+
+      // Set username field readonly and load email + bio if saved
+      document.getElementById("username").value = currentUser;
+
+      const profileData = JSON.parse(localStorage.getItem("profile_" + currentUser));
+      if (profileData) {
+        if (profileData.email) document.getElementById("email").value = profileData.email;
+        if (profileData.bio) document.getElementById("bio").value = profileData.bio;
+      } else {
+        // If no profile saved, try loading email from signup info
+        const emailFromSignup = localStorage.getItem("email_" + currentUser);
+        if (emailFromSignup) {
+          document.getElementById("email").value = emailFromSignup;
+        }
+      }
+    };
+
+    function saveProfile() {
+      const currentUser = localStorage.getItem("currentUser");
+      if (!currentUser) {
+        alert("No user logged in.");
+        return;
+      }
+
+      const email = document.getElementById("email").value.trim();
+      const bio = document.getElementById("bio").value.trim();
+
+      // Save updated profile data without touching password/login
+      localStorage.setItem("profile_" + currentUser, JSON.stringify({ email, bio }));
+      alert("Profile saved!");
+    }
+
+    function logout() {
+      localStorage.removeItem("currentUser");  // Clear current user
+      alert("Logging out...");
+      window.location.href = "login.html";
+    }
+  </script>
+
+</body>
+</html>

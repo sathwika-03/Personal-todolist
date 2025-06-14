@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Category Tasks</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    h1, h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    p#taskProgress {
+      font-weight: bold;
+      text-align: center;
+    }
+
+    #taskForm {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    #taskForm input[type="text"] {
+      width: calc(100% - 90px);
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    #taskForm button {
+      margin-left: 8px;
+    }
+
+    ul#taskList {
+      list-style: none;
+      padding-left: 0;
+      margin-top: 10px;
+    }
+
+    ul#taskList li {
+      background: #f0f0f0;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    ul#taskList li.done {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    ul#taskList li button {
+      background-color: #e74c3c;
+      margin-left: 10px;
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 3px;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    ul#taskList li button:hover {
+      background-color: #c0392b;
+    }
+
+    button {
+      background-color: #4caf50;
+      border: none;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    button:focus {
+      outline: none;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 15px;
+      }
+
+      button {
+        font-size: 12px;
+        padding: 6px 10px;
+      }
+
+      #taskForm input[type="text"] {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      .no-underline {
+         text-decoration: none;
+         color: inherit;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+     <a href="todo.html" class="no-underline" style="display:block; text-align: left;">&#8592;</a>
+    <h2 id="categoryTitle"></h2>
+    <p id="taskProgress"></p>
+
+    <div id="taskForm">
+      <input type="text" id="newTaskInput" placeholder="New task">
+      <button onclick="addTask()">Add Task</button>
+    </div>
+
+    <ul id="taskList"></ul>
+
+    <div style="text-align: center; margin-top: 15px;">
+      <button onclick="submitTasks()">Submit</button>
+    </div>
+  </div>
+
+  <script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const category = urlParams.get('name') || "Unknown";
+  const storageKey = `tasks_${category}`;
+  let tasks = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+  document.getElementById("categoryTitle").textContent = `Tasks for ${category}`;
+
+  function renderTasks() {
+    const list = document.getElementById("taskList");
+    list.innerHTML = "";
+    let completed = 0;
+
+    tasks.forEach((task, index) => {
+      const li = document.createElement("li");
+      li.className = task.done ? "done" : "";
+      li.innerHTML = `
+        <input type="checkbox" ${task.done ? "checked" : ""} onchange="toggleDone(${index})">
+        ${task.text}
+        <button onclick="deleteTask(${index})">Delete</button>
+      `;
+      if (task.done) completed++;
+      list.appendChild(li);
+    });
+
+    document.getElementById("taskProgress").textContent =
+      `Completed ${completed} of ${tasks.length} tasks`;
+  }
+
+  function addTask() {
+    const input = document.getElementById("newTaskInput");
+    const text = input.value.trim();
+    if (!text) return;
+    tasks.push({ text, done: false });
+    input.value = "";
+    saveAndRender();
+  }
+
+  function toggleDone(index) {
+    tasks[index].done = !tasks[index].done;
+    saveAndRender();
+  }
+
+  function deleteTask(index) {
+    tasks.splice(index, 1);
+    saveAndRender();
+  }
+
+  function submitTasks() {
+    const completed = tasks.filter(t => t.done).length;
+    alert(`You completed ${completed} of ${tasks.length} tasks.`);
+    window.location.href = "todo.html"; // 👈 Redirect after OK
+  }
+
+  function saveAndRender() {
+    localStorage.setItem(storageKey, JSON.stringify(tasks));
+    renderTasks();
+  }
+
+  renderTasks();
+</script>
+
+</body>
+</html>
