@@ -14,5 +14,5 @@ A clean and minimal To-Do List web app that helps you stay organized by grouping
 
 Just download or clone the repo and open the `todo.html` file in your browser.
 
-git clone https://github.com/sathwika-03/Personal-todo.git
+git clone https://github.com/sathwika-03/Personal-todolist.git
 cd todo-list-categories
