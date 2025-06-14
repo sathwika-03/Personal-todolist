@@ -10,14 +10,9 @@ A clean and minimal To-Do List web app that helps you stay organized by grouping
 - 💾 Data stored in `localStorage` for persistence
 - 📱 Fully responsive layout for mobile and desktop
 
-## 🖼️ Screenshot
-
-![Screenshot of To-Do List App](./assets/Screenshot of To-do List App.png)
-
 ## 🚀 Getting Started
 
-Just download or clone the repo and open the `index.html` file in your browser.
+Just download or clone the repo and open the `todo.html` file in your browser.
 
-```bash
 git clone https://github.com/sathwika-03/Personal-todo.git
 cd todo-list-categories
