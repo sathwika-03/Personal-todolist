@@ -1,64 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>To-Do Dashboard</title>
-  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* General body and container styling */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    h1, h2 {
+      margin-top: 0;
+    }
+
+    .no-underline {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .profile-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+
+    button {
+      background-color: #4caf50;
+      border: none;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+      margin-left: 5px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    button:focus {
+      outline: none;
+    }
+
+    .task {
+      padding: 12px;
+      background: #e8f5e9;
+      margin-bottom: 10px;
+      border-radius: 6px;
+    }
+
+    .task a {
+      color: #2e7d32;
+      font-weight: 600;
+    }
+
+    #todoForm {
+      margin-top: 15px;
+    }
+
+    #todoForm input[type="text"] {
+      width: calc(100% - 90px);
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    #todoForm button {
+      margin-left: 8px;
+    }
+
+    #addButton {
+      font-size: 22px;
+      font-weight: bold;
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      padding: 0;
+      margin: 10px 0;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 15px;
+      }
+
+      button {
+        font-size: 12px;
+        padding: 6px 10px;
+      }
+
+      #todoForm input[type="text"] {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-   <button> <a href="login.html" class="no-underline" style="display:block; text-align:right">login</button>
-
-    <div class="header">
-      <h2>Hello Sathwika</h2>
-      <p>Today you have <span id="totalTasks">17</span> tasks</p>
+    <div class="top-bar">
+      <a href="profile.html"><img src="profile.png" alt="Profile" class="profile-avatar"></a>
+      <a href="login.html"><button>Login</button></a>
     </div>
 
-    <!-- Original categories -->
-    <div class="task"><a href="personal.html" class="no-underline" >👤 Personal — 4 Tasks</div>
-    <div class="task"><a href="fitness.html" class="no-underline" >🏋️ Fitness — 4 Tasks</div>
-    <div class="task"><a href="education.html" class="no-underline" >📖 Education — 3 Tasks</div>
-    <div class="task"><a href="coding.html" class="no-underline" >💻 Coding — 3 Tasks</div>
-    <div class="task"><a href="health.html" class="no-underline" >❤️ Health — 3 Tasks</div>
+    <div class="header-text">
+      <h2>Hello</h2>
+      <p>Today's <span id="totalTasks"></span> tasks</p>
+    </div>
 
-    <!-- Add Task Button -->
+    <div id="categoryList">
+      <div class="task"><a href="category.html?name=Fitness" class="no-underline">🏋️ Fitness</a></div>
+      <div class="task"><a href="category.html?name=Education" class="no-underline">📘 Education</a></div>
+      <div class="task"><a href="category.html?name=Coding" class="no-underline">💻 Coding</a></div>
+      <div class="task"><a href="category.html?name=Health" class="no-underline">❤️ Health</a></div>
+    </div>
+
     <button id="addButton">+</button>
 
-    <!-- Add Task Form -->
-    <div id="addTaskForm" style="display: none;">
-      <input type="text" id="taskInput" placeholder="Enter a task">
-      <button onclick="addTask()">Add Task</button>
+    <div id="todoForm" style="display:none;">
+      <input type="text" id="newCategory" placeholder="Enter custom category">
+      <button onclick="addCategory()">Add</button>
     </div>
-
-    <!-- New tasks will appear here -->
-    <div id="newTasksContainer"></div>
   </div>
 
   <script>
-    document.getElementById("addButton").onclick = function () {
-      const form = document.getElementById("addTaskForm");
-      form.style.display = (form.style.display === "none") ? "block" : "none";
+    const addBtn = document.getElementById("addButton");
+    const form = document.getElementById("todoForm");
+    const categoryList = document.getElementById("categoryList");
+
+    addBtn.onclick = () => {
+      form.style.display = form.style.display === "none" ? "block" : "none";
     };
 
-    function addTask() {
-      const task = document.getElementById("taskInput").value;
-      if (task.trim() === "") return;
+    window.onload = () => {
+      const saved = JSON.parse(localStorage.getItem("customCategories")) || [];
+      saved.forEach(cat => createCategoryLink(cat));
+    };
 
-      const container = document.getElementById("newTasksContainer");
+    function addCategory() {
+      const input = document.getElementById("newCategory");
+      const name = input.value.trim();
+      if (!name) return;
 
-      // Create a new block for the task
+      let saved = JSON.parse(localStorage.getItem("customCategories")) || [];
+
+      if (!saved.includes(name)) {
+        saved.push(name);
+        localStorage.setItem("customCategories", JSON.stringify(saved));
+        createCategoryLink(name);
+      }
+
+      input.value = "";
+    }
+
+    function createCategoryLink(name) {
       const div = document.createElement("div");
-      div.className = "new-task";
-      div.innerHTML = `<input type="checkbox"> ${task}`;
-
-      container.appendChild(div);
-
-      // Update total task count
-      const total = document.getElementById("totalTasks");
-      total.textContent = parseInt(total.textContent) + 1;
-
-      // Clear the input
-      document.getElementById("taskInput").value = "";
+      div.className = "task";
+      const link = document.createElement("a");
+      link.href = `category.html?name=${encodeURIComponent(name)}`;
+      link.className = "no-underline";
+      link.textContent = `🆕 ${name}`;
+      div.appendChild(link);
+      categoryList.appendChild(div);
     }
   </script>
 </body>
